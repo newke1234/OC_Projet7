@@ -37,6 +37,12 @@ app.put('/api/stuff/:id', (res, res, next) => {
   .catch(error => res.status(400).json({ error}));
 })
 
+app.delete('/api/stuff/:id', (req, res, next) => {
+  Book.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
 app.get('/api/book', (req, res, next) => {
   Book.find()
   .then( book => res.status(200).json(book))
