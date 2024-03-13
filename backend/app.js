@@ -31,15 +31,15 @@ app.post('/api/book', (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 });
 
-app.put('/api/stuff/:id', (res, res, next) => {
+app.put('/api/stuff/:id', (req, res, next) => {
   Book.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-  .then(book => res.status(200).json(book))
-  .catch(error => res.status(400).json({ error}));
-})
+    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));
+});
 
-app.delete('/api/stuff/:id', (req, res, next) => {
+app.delete('/api/book/:id', (req, res, next) => {
   Book.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+    .then(() => res.status(200).json({ message: 'Objet supprime !'}))
     .catch(error => res.status(400).json({ error }));
 });
 
