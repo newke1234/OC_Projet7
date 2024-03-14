@@ -1,14 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const dotenv = require('dotenv');
 
 const Book = require('./models/Book');
 const User = require('./models/User');
 
-mongoose.connect('mongodb+srv://user_admin:l7o5sgQoIaEq0Q0f@cluster0.aop5puc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-  // { useNewUrlParser: true,
-    // useUnifiedTopology: true }
-)
+dotenv.config();
+
+mongoose.connect(process.env.DATABASE)
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
@@ -21,17 +21,37 @@ app.use((req, res, next) => {
     next();
   });
 
+app.post('/api/auth/signup', (req, res, next) => {
+  delete req.body._id;
+  const user = new User({
+    ...req.body
+  });
+  user.save()
+    .then(() => res.status(201).json({ message: 'Utilisateur enregistre !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+// app.post('/api/auth/login', (req, res, next) => {
+//   delete req.body._id;
+//   const user = new User({
+//     ...req.body
+//   });
+//   book.save()
+//     .then(() => res.status(201).json({ message: 'Utilisateur enregistre !'}))
+//     .catch(error => res.status(400).json({ error }));
+// });
+
 app.post('/api/book', (req, res, next) => {
   delete req.body._id;
   const book = new Book({
     ...req.body
   });
-  Book.save()
+  book.save()
     .then(() => res.status(201).json({ message: 'Objet enregistre !'}))
     .catch(error => res.status(400).json({ error }));
 });
 
-app.put('/api/stuff/:id', (req, res, next) => {
+app.put('/api/book/:id', (req, res, next) => {
   Book.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
