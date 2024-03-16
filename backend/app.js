@@ -22,6 +22,6 @@ app.use((req, res, next) => {
   });
 
 app.use('/api/book', bookRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
