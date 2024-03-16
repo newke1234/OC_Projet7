@@ -2,11 +2,12 @@ const Book = require('../models/Book');
 
 exports.createBook = (req, res, next) => {
     const book = new Book({
+      userId: req.body.userId,
       title: req.body.title,
-      description: req.body.description,
+      author: req.body.author,
       imageUrl: req.body.imageUrl,
-      price: req.body.price,
-      userId: req.body.userId
+      year: req.body.year,
+      
     });
     book.save().then(
       () => {
@@ -26,11 +27,11 @@ exports.createBook = (req, res, next) => {
 exports.modifyBook = ((req, res, next) => {
     const book = new Book({
       _id: req.params.id,
+      userId: req.body.userId,
       title: req.body.title,
-      description: req.body.description,
+      author: req.body.author,
       imageUrl: req.body.imageUrl,
-      price: req.body.price,
-      userId: req.body.userId
+      year: req.body.year,
     });
     Book.updateOne({_id: req.params.id}, book).then(
       () => {
@@ -96,11 +97,11 @@ exports.getAllBook = ((req, res, next) => {
   exports.rateBook = ((req, res, next) => {
     const book = new Book({
       _id: req.params.id,
+      userId: req.body.userId,
       title: req.body.title,
-      description: req.body.description,
+      author: req.body.author,
       imageUrl: req.body.imageUrl,
-      price: req.body.price,
-      userId: req.body.userId
+      year: req.body.year,
     });
     Book.rateOne({_id: req.params.id}, book).then(
       () => {
