@@ -22,8 +22,9 @@ app.use((req, res, next) => {
 app.use(express.json());
 const path = require('path');
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/book', bookRoutes);
 app.use('/api/auth', userRoutes);
-app.use('/images', express.static(path.join(__dirname, 'images')));
+
 
 module.exports = app;
