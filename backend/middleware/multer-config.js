@@ -1,3 +1,56 @@
+const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
+
+const storage = multer.memoryStorage(); // Utilisation de la mémoire pour stocker temporairement les fichiers
+
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        const isValid = MIME_TYPES[file.mimetype];
+        let error = isValid ? null : new Error('Invalid file type');
+        cb(error, isValid);
+    }
+}).single('image');
+
+module.exports = (req, res, next) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image provided' });
+        }
+
+        // Utiliser Sharp pour redimensionner et optimiser l'image
+        try {
+            const resizedImageBuffer = await sharp(req.file.buffer)
+                .resize({ width: 800 }) // Redimensionner l'image en largeur 800px
+                .webp({ quality: 50 }) // Définir la qualité de l'image webp
+                .toBuffer();
+
+            // Enregistrer l'image redimensionnée sur le disque avec un nom unique
+            let name = req.file.originalname
+            .split(' ').join('_').split('.');
+            name.pop();
+            name = name.join('.');
+                
+             // Enregistrer l'image redimensionnée sur le disque avec un nom unique
+            //  const extension = MIME_TYPES[file.mimetype];
+             const filename = name + '_' + Date.now() + '.webp';
+             fs.writeFileSync(`images/${filename}`, resizedImageBuffer);
+ 
+             // Mettre à jour la requête avec le nom de l'image redimensionnée
+             req.file.filename = filename;
+            
+        } catch (error) {
+            return res.status(500).json({ error: 'Error processing image' });
+        }
+
+        next();
+    });
+};
 
 
 
@@ -15,14 +68,14 @@
 //     destination: (req, file, callback) => {
 //         callback(null, 'images')
 //     },
-//     filename: (req, file, callback) => {
-//         let name = file.originalname.split(' ').join('_').split('.');
-//         name.pop();
-//         name = name.join('.');
+    // filename: (req, file, callback) => {
+    //     let name = file.originalname.split(' ').join('_').split('.');
+    //     name.pop();
+    //     name = name.join('.');
         
-//         const extension = MIME_TYPES[file.mimetype];
-//         callback(null, name + Date.
-//             now() + '.' + extension);
+    //     const extension = MIME_TYPES[file.mimetype];
+    //     callback(null, name + Date.
+    //         now() + '.' + extension);
   
 //     }
 // });
