@@ -1,17 +1,20 @@
 const  bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
 const User = require('../models/User');
 
+dotenv.config();
+
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, Number(process.env.BCRYPT_HASH_MULTIPLIER))
     .then(hash => {
         const user = new User({
             email: req.body.email, 
             password: hash
         })
         user.save()
-        .then(() => res.status(201).json({ message: 'utilisateur crée !'}))
+        .then(() => res.status(201).json({ message: 'utilisateur créé !'}))
         .catch(error => res.status(400).json({ error }))
 
     })

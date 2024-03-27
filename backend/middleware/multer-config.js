@@ -2,6 +2,12 @@ const multer = require('multer');
 const sharp = require('sharp');
 const fs = require('fs');
 
+const MIME_TYPES = {
+    'image/jpg' : 'jpg',
+    'image/jpeg': 'jpg',
+    'image/png': 'png'
+};
+
 const storage = multer.memoryStorage(); // Utilisation de la mémoire pour stocker temporairement les fichiers
 
 const upload = multer({
@@ -51,33 +57,3 @@ module.exports = (req, res, next) => {
         next();
     });
 };
-
-
-
-
-// const multer = require('multer');
-// const sharp = require('sharp');
-
-// const MIME_TYPES = {
-//     'image/jpg' : 'jpg',
-//     'image/jpeg': 'jpg',
-//     'image/png': 'png'
-// };
-
-// const storage = multer.diskStorage({
-//     destination: (req, file, callback) => {
-//         callback(null, 'images')
-//     },
-    // filename: (req, file, callback) => {
-    //     let name = file.originalname.split(' ').join('_').split('.');
-    //     name.pop();
-    //     name = name.join('.');
-        
-    //     const extension = MIME_TYPES[file.mimetype];
-    //     callback(null, name + Date.
-    //         now() + '.' + extension);
-  
-//     }
-// });
-
-// module.exports = multer({ storage }).single('image');
