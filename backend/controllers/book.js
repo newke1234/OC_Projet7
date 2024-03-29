@@ -82,7 +82,7 @@ exports.getAllBook = ((req, res, next) => {
         });
       }
     );
-  })
+  });
 
   exports.getOneBook = ((req, res, next) => {
     Book.findOne({
@@ -100,39 +100,39 @@ exports.getAllBook = ((req, res, next) => {
     );
   })
 
-  exports.addRating = (req, res, next) => {
-    const { userId, grade } = req.body;
-    const bookId = req.params.id;
+exports.addRating = (req, res, next) => {
+  const { userId, grade } = req.body;
+  const bookId = req.params.id;
 
-    // Vérifier si la note est dans la plage autorisée (0 à 5)
-    if (grade < 0 || grade > 5) {
-        return res.status(400).json({ error: 'La note doit être comprise entre 0 et 5' });
-    }
+  // Vérifier si la note est dans la plage autorisée (0 à 5)
+  if (grade < 0 || grade > 5) {
+      return res.status(400).json({ error: 'La note doit être comprise entre 0 et 5' });
+  }
 
-    Book.findById(bookId)
-        .then(book => {
-            if (!book) {
-                return res.status(404).json({ error: 'Livre non trouvé' });
-            }
+  Book.findById(bookId)
+      .then(book => {
+          if (!book) {
+              return res.status(404).json({ error: 'Livre non trouvé' });
+          }
 
-            const existingRatingIndex = book.ratings.findIndex(rating => rating.userId === userId);
-            if (existingRatingIndex !== -1) {
-                return res.status(400).json({ error: 'L\'utilisateur a déjà noté ce livre' });
-            }
+          const existingRatingIndex = book.ratings.findIndex(rating => rating.userId === userId);
+          if (existingRatingIndex !== -1) {
+              return res.status(400).json({ error: 'L\'utilisateur a déjà noté ce livre' });
+          }
 
-            book.ratings.push({ userId, grade });
+          book.ratings.push({ userId, grade });
 
-            const totalGrades = book.ratings.reduce((sum, rating) => sum + rating.grade, 0); // Calcul totalGrades = somme de toutes les notes du tableau "ratings"
-            const averageGrade = totalGrades / book.ratings.length;
-            book.averageRating = averageGrade;
+          const totalGrades = book.ratings.reduce((sum, rating) => sum + rating.grade, 0); // Calcul totalGrades = somme de toutes les notes du tableau "ratings"
+          const averageGrade = totalGrades / book.ratings.length;
+          book.averageRating = averageGrade.toFixed(1);
 
-            return book.save();
-        })
-        .then(() => {
-            return res.status(200).json({ message: 'Note ajoutée avec succès' });
-        })
-        .catch(error => {
-          console.log(error);
-            return res.status(500).json({ error: 'Erreur interne du serveur' });
-        });
+          return book.save();
+      })
+      .then(() => {
+          return res.status(200).json({ message: 'Note ajoutée avec succès' });
+      })
+      .catch(error => {
+        console.log(error);
+          return res.status(500).json({ error: 'Erreur interne du serveur' });
+      });
 };
