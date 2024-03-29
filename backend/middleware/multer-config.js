@@ -14,7 +14,7 @@ const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         const isValid = MIME_TYPES[file.mimetype];
-        let error = isValid ? null : new Error('Invalid file type');
+        let error = isValid ? null : new Error('Type de fichier non valide');
         cb(error, isValid);
     }
 }).single('image');
@@ -26,7 +26,7 @@ module.exports = (req, res, next) => {
         }
 
         if (!req.file) {
-            return res.status(400).json({ error: 'No image provided' });
+            return res.status(400).json({ error: 'Aucun fichier selectionné' });
         }
 
         // Utiliser Sharp pour redimensionner et optimiser l'image
@@ -51,7 +51,7 @@ module.exports = (req, res, next) => {
              req.file.filename = filename;
             
         } catch (error) {
-            return res.status(500).json({ error: 'Error processing image' });
+            return res.status(500).json({ error: 'Erreur de traitement de l\'image' });
         }
 
         next();
