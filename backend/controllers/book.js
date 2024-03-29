@@ -29,13 +29,24 @@ exports.modifyBook = ((req, res, next) => {
   delete bookObject._userId;
   Book.findOne({_id: req.params.id})
   .then((book) => {
+
     if (book.userId != req.auth.userId) {
-      res.status(403).json({ message: 'unauthorized request'})
+      res.status(403).json({ message: 'Vous n\'êtes pas autorisé à modifier ce livre '})
     } else {
       Book.updateOne({ _id: req.params.id}, {...bookObject, _id: req.params.id})
       .then(() => res.status(200).json({message : 'Livre modifié'}))
       .catch(error => res.status(401).json({ error }));
+      if (req.file) {
+        // Supprimer l'image existante si elle existe
+        const imagePath = book.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${imagePath}`, (err) => {
+            if (err) {
+                console.error("Erreur lors de la suppression de l'image existante :", err);
+            }
+        });
     }
+    }
+
     })
   .catch((error) => res.status(400).json({error}));
 });
