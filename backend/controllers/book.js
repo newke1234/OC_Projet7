@@ -7,9 +7,9 @@ exports.createBook = (req, res, next) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Aucune image téléchargée' });
   }
-
-  const bookObject = req.body;
-  console.log(bookObject);
+  const bookObject = JSON.parse(req.body.book);
+  delete bookObject._id;
+  delete bookObject._userId;
   const book = new Book({
     ...bookObject,
     userId: req.auth.userId,
@@ -22,7 +22,7 @@ exports.createBook = (req, res, next) => {
     
 exports.modifyBook = ((req, res, next) => {
   const bookObject = req.file ? {
-    ...req.body,
+    ...JSON.parse(req.body.book),
     imageUrl:`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   } : { ...req.body };
 
@@ -101,7 +101,7 @@ exports.getAllBook = ((req, res, next) => {
   })
 
 exports.addRating = (req, res, next) => {
-  const { userId, grade } = req.body;
+  const { userId, grade } = JSON.parse(req.body.book);
   const bookId = req.params.id;
 
   // Vérifier si la note est dans la plage autorisée (0 à 5)
@@ -134,5 +134,15 @@ exports.addRating = (req, res, next) => {
       .catch(error => {
         console.log(error);
           return res.status(500).json({ error: 'Erreur interne du serveur' });
+      });
+};
+
+exports.getBestRating = (req, res, next) => {
+  Book.find().sort({ averageRating: -1 }).limit(3)
+      .then(book => {
+          res.status(200).json(book);
+      })
+      .catch(error => {
+          res.status(500).json({ error: 'Erreur interne du serveur' });
       });
 };
