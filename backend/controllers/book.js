@@ -109,7 +109,7 @@ exports.getAllBook = ((req, res, next) => {
 exports.addRating = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
       .then(book => {
-          // Vérifie que la note est comprise entre 1 et 5 et qu'une note n'a pas déja été attribuer par cette utilisateur
+          // Vérifie que la note est comprise entre 0 et 5 et qu'une note n'a pas déja été attribuer par cette utilisateur
           if (book.ratings.some(rating => rating.userId === req.userId) || (req.body.grade < 0 || req.body.grade > 5)) {
               res.status(500).json({ error: 'Erreur lors de la notation : La note doit être comprise entre 0 et 5' });
           } else {
