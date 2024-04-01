@@ -29,10 +29,4 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/books', bookRoutes);
 app.use('/api/auth', userRoutes);
 
-// Middleware pour le rafraîchissement de la page
-app.use('/api/refresh', (req, res, next) => {
-  // Rediriger vers la page d'accueil du frontend (ou toute autre URL de votre choix)
-  res.redirect('/');
-});
-
 module.exports = app;
