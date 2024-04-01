@@ -8,6 +8,10 @@ const bookRoutes = require('./routes/book');
 
 dotenv.config();
 
+mongoose.connect(process.env.DATABASE)
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
+
 // Middleware CORS
 
 app.use((req, res, next) => {
@@ -25,9 +29,10 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/books', bookRoutes);
 app.use('/api/auth', userRoutes);
 
-mongoose.connect(process.env.DATABASE)
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
-
+// Middleware pour le rafraîchissement de la page
+app.use('/api/refresh', (req, res, next) => {
+  // Rediriger vers la page d'accueil du frontend (ou toute autre URL de votre choix)
+  res.redirect('/');
+});
 
 module.exports = app;
