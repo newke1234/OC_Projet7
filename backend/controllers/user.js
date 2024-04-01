@@ -6,19 +6,34 @@ const User = require('../models/User');
 
 dotenv.config();
 
-exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, Number(process.env.BCRYPT_HASH_MULTIPLIER))
-    .then(hash => {
-        const user = new User({
-            email: req.body.email, 
-            password: hash
-        })
-        user.save()
-        .then(() => res.status(201).json({ message: 'utilisateur créé !'}))
-        .catch(error => res.status(400).json({ error }))
 
-    })
-    .catch(error => res.status(500).json({error}));
+exports.signup = (req, res, next) => {
+    // Vérifier si l'utilisateur existe déjà dans la base de données
+    User.findOne({ email: req.body.email })
+        .then(existingUser => {
+            if (existingUser) {
+                return res.status(400).json({ error: 'Cet e-mail est déjà utilisé' });
+            }
+
+            // Si l'utilisateur n'existe pas, continuer avec la création du nouvel utilisateur
+            bcrypt.hash(req.body.password, 10)
+                .then(hashedPassword => {
+                    const user = new User({
+                        email: req.body.email,
+                        password: hashedPassword
+                    });
+                    return user.save();
+                })
+                .then(() => {
+                    res.status(201).json({ message: 'Utilisateur créé avec succès' });
+                })
+                .catch(error => {
+                    res.status(400).json({ error: 'Erreur interne du serveur' });
+                });
+        })
+        .catch(error => {
+            res.status(500).json({ error: 'Erreur interne du serveur' });
+        });
 };
 
 exports.login = (req, res, next) => {
