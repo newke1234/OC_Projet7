@@ -102,15 +102,15 @@ exports.addRating = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
       .then(book => {
           // Vérifie que la note est comprise entre 1 et 5 et qu'une note n'a pas déja été attribuer par cette utilisateur
-          if (book.ratings.some(rating => rating.userId === req.userId) || (req.body.grade < 1 || req.body.grade > 5)) {
-              res.status(500).json({ error: 'Erreur lors de la notation' });
+          if (book.ratings.some(rating => rating.userId === req.userId) || (req.body.grade < 0 || req.body.grade > 5)) {
+              res.status(500).json({ error: 'Erreur lors de la notation : La note doit être comprise entre 0 et 5' });
           } else {
               // Ajoute la nouvelle évaluation
-              const obj = {
+              const note = {
                 userId: req.body.userId,
                 grade: req.body.rating
               };
-              book.ratings.push(obj);
+              book.ratings.push(note);
               // Calcule la nouvelle moyenne des notes
               const totalRatings = book.ratings.length;
               const sumOfRatings = book.ratings.reduce((acc, rating) => acc + rating.grade, 0);
