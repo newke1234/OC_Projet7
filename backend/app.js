@@ -8,7 +8,8 @@ const bookRoutes = require('./routes/book');
 
 dotenv.config();
 
-mongoose.connect(process.env.DATABASE)
+const database_path = `${process.env.DB_HOST}${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}`;
+mongoose.connect(database_path)
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
