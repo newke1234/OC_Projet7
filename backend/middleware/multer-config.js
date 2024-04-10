@@ -25,14 +25,14 @@ const multer_builder = (image_optionelle) => {
         return (req, res, next) => {
             upload(req, res, async (err) => {
                 if (err) {
-                    return res.status(400).json({ error: err.message });
+                    return res.status(400).json({ error: err.message }); // résolution requise sur le frontend
                 }
 
                 if (req.file) {
                     // Utiliser Sharp pour redimensionner et optimiser l'image
                     try {
                         const resizedImageBuffer = await sharp(req.file.buffer)
-                            .resize({ width: 800 }) // Redimensionner l'image en largeur 800px
+                            .resize({ width: 400 }) // Redimensionner l'image en largeur 800px
                             .webp({ quality: 50 }) // Définir la qualité de l'image webp
                             .toBuffer();
 
