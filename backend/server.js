@@ -1,10 +1,14 @@
+// Importation du module HTTP intégré à Node.js
 const http = require('http');
+// Importation de la bibliothèque dotenv pour charger les variables d'environnement à partir du fichier .env
 const dotenv = require('dotenv');
+// Importation de l'application express depuis le fichier app.js
 const app = require('./app');
 
-// Charger les variables d'environnement à partir du fichier .env
+// Chargement des variables d'environnement à partir du fichier .env
 dotenv.config();
 
+// Fonction pour normaliser le port fourni en entrée
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
@@ -16,10 +20,11 @@ const normalizePort = val => {
   }
   return false;
 };
-const port = normalizePort(process.env.PORT || '3000');
+// Définition du port sur lequel l'application va écouter
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-
+// Gestionnaire d'erreur pour le serveur
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error;
@@ -40,13 +45,17 @@ const errorHandler = error => {
   }
 };
 
+// Création du serveur HTTP en utilisant l'application express
 const server = http.createServer(app);
 
+// Gestion des erreurs du serveur
 server.on('error', errorHandler);
+// Écouteur d'événement pour le démarrage du serveur
 server.on('listening', () => {
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);
 });
 
+// Démarrage du serveur en écoutant sur le port défini
 server.listen(port);
