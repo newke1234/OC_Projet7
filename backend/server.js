@@ -1,9 +1,6 @@
-// Importation du module HTTP intégré à Node.js
-const http = require('http');
-// Importation de la bibliothèque dotenv pour charger les variables d'environnement à partir du fichier .env
-const dotenv = require('dotenv');
-// Importation de l'application express depuis le fichier app.js
-const app = require('./app');
+const http = require('http'); // Importation du module HTTP intégré à Node.js
+const dotenv = require('dotenv'); // Importation de la bibliothèque dotenv pour charger les variables d'environnement à partir du fichier .env
+const app = require('./app'); // Importation de l'application express depuis le fichier app.js
 
 // Chargement des variables d'environnement à partir du fichier .env
 dotenv.config();

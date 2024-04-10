@@ -1,3 +1,5 @@
+// Schéma de données pour les livres
+
 const mongoose = require('mongoose');
 
 const bookSchema = mongoose.Schema({

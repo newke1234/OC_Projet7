@@ -1,10 +1,8 @@
-// Importation du framework Express pour la création d'une application web
-const express = require('express');
-// Importation du module Mongoose pour l'interaction avec la base de données MongoDB
-const mongoose = require('mongoose');
+const express = require('express'); // Importation du framework Express pour la création d'une application web
+const mongoose = require('mongoose'); // Importation du module Mongoose pour l'interaction avec la base de données MongoDB
 const app = express();
-// Importation du module dotenv pour charger les variables d'environnement à partir du fichier .env
-const dotenv = require('dotenv');
+
+const dotenv = require('dotenv'); // Importation du module dotenv pour charger les variables d'environnement à partir du fichier .env
 
 // Importation des routes définies pour les utilisateurs et les livres
 const userRoutes = require('./routes/user');
@@ -19,7 +17,7 @@ mongoose.connect(database_path)
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-// Middleware CORS (Cross-Origin Resource Sharing) pour permettre les requêtes provenant de différents domaines
+// Middleware CORS (Cross-Origin Resource Sharing) pour autoriser les requêtes provenant de différents domaines
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Autoriser toutes les origines
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
