@@ -14,8 +14,7 @@ exports.createBook = (req, res, next) => {
     return res.status(400).json({ error: 'Aucune image téléchargée' });
   }
   const bookObject = JSON.parse(req.body.book);
-  delete bookObject._id;
-  delete bookObject._userId;
+  delete bookObject._userId; // Sécurité : On supprime le champ _userID pour éviter que le client passe l'id d'une autre personne dans la requête.
   const book = new Book({
     ...bookObject,
     userId: req.auth.userId,
@@ -30,7 +29,7 @@ exports.modifyBook = ((req, res, next) => {
     ...JSON.parse(req.body.book),
     imageUrl:`${req.file.filename}`
   } : {...req.body};
-  delete bookObject._userId;
+  delete bookObject._userId; // Sécurité : On supprime le champ _userID pour éviter que le client passe l'id d'une autre personne dans la requête.
   Book.findOne({_id: req.params.id})
   .then((book) => {
     if (book.userId != req.auth.userId) {
@@ -57,7 +56,6 @@ exports.modifyBook = ((req, res, next) => {
 exports.deleteBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id})
       .then(book => {
-        // addUrl(book);
           if (book.userId != req.auth.userId) {
               res.status(403).json({message: 'unauthorized request'});
           } else {
