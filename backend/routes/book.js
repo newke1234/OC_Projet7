@@ -10,7 +10,7 @@ const bookCtrl = require('../controllers/book');
 router.get('/bestrating', bookCtrl.getBestRating);
 router.get('/', bookCtrl.getAllBook);
 router.get('/:id', bookCtrl.getOneBook);
-router.post('/', auth, multer(false), bookCtrl.createBook);
+router.post('/', auth, multer(false), bookCtrl.createBook); // Requiert une authentification // Usage de Multer : traitement d'image
 router.put('/:id', auth, multer(true), bookCtrl.modifyBook);
 router.delete('/:id', auth, bookCtrl.deleteBook);
 router.post('/:id/rating', auth, bookCtrl.addRating);
