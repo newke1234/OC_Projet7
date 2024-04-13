@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passwordValidator = require('password-validator');
 
 const dotenv = require('dotenv');
 
@@ -7,8 +8,23 @@ const User = require('../models/User'); // Importation du modèle User pour l'in
 
 dotenv.config();
 
+// Création d'un schéma pour la validation du mot de passe
+const passwordSchema = new passwordValidator();
+passwordSchema
+    .is().min(12)            // Minimum 12 caractères
+    .is().max(100)          // Maximum 100 caractères
+    .has().uppercase()      // Doit avoir au moins une lettre majuscule
+    .has().lowercase()      // Doit avoir au moins une lettre minuscule
+    .has().digits()         // Doit avoir au moins un chiffre
+    .has().not().spaces();  // Ne doit pas contenir d'espaces
+
 // Fonction pour l'inscription d'un nouvel utilisateur
 exports.signup = (req, res, next) => {
+
+   // Vérifier si le mot de passe satisfait les critères de validation
+   if (!passwordSchema.validate(req.body.password)) {
+    return res.status(400).json({ error: 'Le mot de passe ne respecte pas les critères de validation' });
+}
     // Vérifier si l'utilisateur existe déjà dans la base de données
     User.findOne({ email: req.body.email })
         .then(existingUser => {
