@@ -71,7 +71,7 @@ const multer_builder = (image_optionelle) => {
                 // Utiliser Sharp pour redimensionner et optimiser l'image
                 try {
                     const resizedImageBuffer = await sharp(req.file.buffer)
-                        .resize({ width: 800 }) // Redimensionner l'image en largeur 800px
+                        .resize({ width: 400 }) // Redimensionner l'image en largeur 800px
                         .webp({ quality: 50 }) // Définir la qualité de l'image webp
                         .toBuffer();
 
@@ -101,4 +101,3 @@ const multer_builder = (image_optionelle) => {
 }
 
 module.exports = multer_builder;
-
